@@ -44,7 +44,7 @@
   :prefix "brain-fm-"
   :group 'multimedia)
 
-(defcustom brain-fm-play-url 'emms-play-url
+(defcustom brain-fm-play-url-function 'emms-play-url
   "Function to use for streaming brain.fm music."
   :type 'function
   :group 'brain-fm)
@@ -98,7 +98,7 @@ When nil read password from authinfo."
 ;;;###autoload
 (defun brain-fm-play (&optional station-id)
   "Start playing brain.fm station STATION-ID."
-  (interactive "p")
+  (interactive "P")
   (request
    "https://www1.brain.fm/tokens"
    :type "POST"
@@ -110,9 +110,9 @@ When nil read password from authinfo."
    :success (function*
              (lambda (&key data &allow-other-keys)
                (let* ((brain-fm-token (cdr (assoc 'token (aref (assoc-default 'songs data) 0))))
-                      (brain-fm-play-url (format "https://stream.brain.fm/?tkn=%s" brain-fm-token)))
+                      (brain-fm-url (format "https://stream.brain.fm/?tkn=%s" brain-fm-token)))
                  (message "Start playing brain.fm station %s" (or station-id brain-fm-station-id))
-                 (funcall brain-fm-play-url brain-fm-play-url))))
+                 (funcall brain-fm-play-url-function brain-fm-url))))
    :error (cl-function (lambda (&rest args &key error-thrown &allow-other-keys)
                          (message "Got error %S while getting token" error-thrown)))))
 (provide 'brain-fm)
