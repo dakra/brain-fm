@@ -1,4 +1,4 @@
-;;; brain.fm.el --- Play music from brain.fm         -*- lexical-binding: t; -*-
+;;; brain-fm.el --- Play music from brain.fm         -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2018  Daniel Kraus
 
@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Package-Requires: ((request "0.3.0") (emacs "24.4"))
 ;; Keywords: multimedia
-;; URL: https://github.com/dakra/brain.fm
+;; URL: https://github.com/dakra/brain-fm
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -28,10 +28,10 @@
 ;; If you have `mpv' installed and use `emms' you can
 ;; load https://github.com/momomo5717/emms-player-simple-mpv
 ;; to add `mpv' as an external player capable of streaming.
-;; Otherwise set `brain.fm-play-url' to whatever player you prefer.
+;; Otherwise set `brain-fm-play-url' to whatever player you prefer.
 ;;
-;; You have to set `brain.fm-email' and `brain.fm-password' to your
-;; brain.fm credentials either by setting those variables directly
+;; You have to set `brain-fm-email' and `brain-fm-password' to your
+;; brain-fm credentials either by setting those variables directly
 ;; or by adding a line like the following to your `.authinfo' / `.authinfo.gpg'
 ;; "machine brain.fm login brainfm@example.com password brainfm-pass"
 
@@ -39,50 +39,50 @@
 
 (require 'request)
 
-(defgroup brain.fm nil
-  "Brain.fm"
-  :prefix "brain.fm-"
+(defgroup brain-fm nil
+  "brain-fm"
+  :prefix "brain-fm-"
   :group 'multimedia)
 
-(defcustom brain.fm-play-url 'emms-play-url
+(defcustom brain-fm-play-url 'emms-play-url
   "Function to use for streaming brain.fm music."
   :type 'function
-  :group 'brain.fm)
+  :group 'brain-fm)
 
-(defcustom brain.fm-station-id 35
-  "Default brain.fm station to play."
+(defcustom brain-fm-station-id 35
+  "Default brain-fm station to play."
   :type 'integer
   :safe #'integerp
-  :group 'brain.fm)
+  :group 'brain-fm)
 
-(defcustom brain.fm-email nil
+(defcustom brain-fm-email nil
   "Your brain.fm email.
 When nil read email from authinfo."
   :type 'string
-  :group 'brain.fm)
+  :group 'brain-fm)
 
-(defcustom brain.fm-password nil
+(defcustom brain-fm-password nil
   "Your brain.fm password.
 When nil read password from authinfo."
   :type 'string
-  :group 'brain.fm)
+  :group 'brain-fm)
 
 ;;;###autoload
-(defun brain.fm-login ()
+(defun brain-fm-login ()
   "Login to brain.fm."
   (interactive)
-  (unless (and brain.fm-email brain.fm-password)
-    (let ((brain.fm-auth (auth-source-user-and-password "brain.fm")))
-      (setq brain.fm-email (car brain.fm-auth))
-      (setq brain.fm-password (cadr brain.fm-auth))))
-  (if (and brain.fm-email brain.fm-password)
+  (unless (and brain-fm-email brain-fm-password)
+    (let ((brain-fm-auth (auth-source-user-and-password "brain-fm")))
+      (setq brain-fm-email (car brain-fm-auth))
+      (setq brain-fm-password (cadr brain-fm-auth))))
+  (if (and brain-fm-email brain-fm-password)
       (request
        "https://www1.brain.fm/login"
        :type "POST"
-       :data (json-encode `(("email" . ,brain.fm-email)
-                            ("password" . ,brain.fm-password)
+       :data (json-encode `(("email" . ,brain-fm-email)
+                            ("password" . ,brain-fm-password)
                             ("type" . "LOGIN")))
-       :headers '(("User-Agent" . "Emacs Brain.fm Client")
+       :headers '(("User-Agent" . "Emacs brain.fm Client")
                   ("Accept" . "application/json")
                   ("Content-Type" . "application/json;charset=utf-8"))
        :parser 'json-read
@@ -96,14 +96,14 @@ When nil read password from authinfo."
     (error "You have to set brain.fm email and password")))
 
 ;;;###autoload
-(defun brain.fm-play (&optional station-id)
+(defun brain-fm-play (&optional station-id)
   "Start playing brain.fm station STATION-ID."
   (interactive "p")
   (request
    "https://www1.brain.fm/tokens"
    :type "POST"
-   :data (json-encode `(("stationId" . ,(or station-id brain.fm-station-id))))
-   :headers '(("User-Agent" . "Emacs Brain.fm Client")
+   :data (json-encode `(("stationId" . ,(or station-id brain-fm-station-id))))
+   :headers '(("User-Agent" . "Emacs brain.fm Client")
               ("Accept" . "application/json")
               ("Content-Type" . "application/json;charset=utf-8"))
    :parser 'json-read
@@ -111,9 +111,9 @@ When nil read password from authinfo."
              (lambda (&key data &allow-other-keys)
                (let* ((brain-fm-token (cdr (assoc 'token (aref (assoc-default 'songs data) 0))))
                       (brain-fm-play-url (format "https://stream.brain.fm/?tkn=%s" brain-fm-token)))
-                 (message "Start playing brain.fm station %s" (or station-id brain.fm-station-id))
-                 (funcall brain.fm-play-url brain-fm-play-url))))
+                 (message "Start playing brain.fm station %s" (or station-id brain-fm-station-id))
+                 (funcall brain-fm-play-url brain-fm-play-url))))
    :error (cl-function (lambda (&rest args &key error-thrown &allow-other-keys)
                          (message "Got error %S while getting token" error-thrown)))))
-(provide 'brain.fm)
-;;; brain.fm.el ends here
+(provide 'brain-fm)
+;;; brain-fm.el ends here
