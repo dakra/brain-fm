@@ -72,7 +72,7 @@ When nil read password from authinfo."
   "Login to brain.fm."
   (interactive)
   (unless (and brain-fm-email brain-fm-password)
-    (let ((brain-fm-auth (auth-source-user-and-password "brain-fm")))
+    (let ((brain-fm-auth (auth-source-user-and-password "brain.fm")))
       (setq brain-fm-email (car brain-fm-auth))
       (setq brain-fm-password (cadr brain-fm-auth))))
   (if (and brain-fm-email brain-fm-password)
