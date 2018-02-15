@@ -99,6 +99,7 @@ When nil read password from authinfo."
 (defun brain-fm-play (&optional station-id)
   "Start playing brain.fm station STATION-ID."
   (interactive "P")
+  (message "Fetching brain.fm token")
   (request
    "https://www1.brain.fm/tokens"
    :type "POST"
