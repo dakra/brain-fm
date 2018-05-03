@@ -46,26 +46,22 @@
 
 (defcustom brain-fm-play-url-function 'emms-play-url
   "Function to use for streaming brain.fm music."
-  :type 'function
-  :group 'brain-fm)
+  :type 'function)
 
 (defcustom brain-fm-station-id 35
   "Default brain-fm station to play."
   :type 'integer
-  :safe #'integerp
-  :group 'brain-fm)
+  :safe #'integerp)
 
 (defcustom brain-fm-email nil
   "Your brain.fm email.
 When nil read email from authinfo."
-  :type 'string
-  :group 'brain-fm)
+  :type 'string)
 
 (defcustom brain-fm-password nil
   "Your brain.fm password.
 When nil read password from authinfo."
-  :type 'string
-  :group 'brain-fm)
+  :type 'string)
 
 ;;;###autoload
 (defun brain-fm-login ()
