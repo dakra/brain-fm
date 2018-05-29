@@ -25,8 +25,7 @@
 
 ;; Play music from brain.fm (https://brain.fm/)
 ;; This library needs a playback function that can stream music from URLs.
-;; If you have `mpv' installed and use `emms' you can
-;; load https://github.com/momomo5717/emms-player-simple-mpv
+;; If you have `mpv' installed and use `emms' you can require emms-player-mpv
 ;; to add `mpv' as an external player capable of streaming.
 ;; Otherwise set `brain-fm-play-url' to whatever player you prefer.
 ;;
