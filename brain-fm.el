@@ -36,6 +36,7 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))
 (require 'request)
 
 (defgroup brain-fm nil
@@ -81,7 +82,7 @@ When nil read password from authinfo."
                   ("Accept" . "application/json")
                   ("Content-Type" . "application/json;charset=utf-8"))
        :parser 'json-read
-       :success (function*
+       :success (cl-function
                  (lambda (&key data &allow-other-keys)
                    (let* ((login-message (assoc-default 'message data))
                           (login-email (assoc-default 'email (assoc-default 'user data))))
@@ -103,7 +104,7 @@ When nil read password from authinfo."
               ("Accept" . "application/json")
               ("Content-Type" . "application/json;charset=utf-8"))
    :parser 'json-read
-   :success (function*
+   :success (cl-function
              (lambda (&key data &allow-other-keys)
                (let* ((brain-fm-token (cdr (assoc 'token (aref (assoc-default 'songs data) 0))))
                       (brain-fm-url (format "https://stream.brain.fm/?tkn=%s" brain-fm-token)))
