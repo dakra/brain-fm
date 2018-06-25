@@ -114,7 +114,8 @@ When nil read password from authinfo."
   "Choose STATION-NAME from minibuffer to play."
   (interactive (list (completing-read "Play brain.fm station: " (mapcar 'car brain-fm-station-ids)
                                       nil t nil 'brain-fm-choose-station-history)))
-  (brain-fm-play (cdr (assoc-string station-name brain-fm-station-ids))))
+  (setq brain-fm-default-station-id (cdr (assoc-string station-name brain-fm-station-ids)))
+  (brain-fm-play brain-fm-default-station-id))
 
 ;;;###autoload
 (defun brain-fm-play (&optional station-id)
