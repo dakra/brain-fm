@@ -48,7 +48,22 @@
   "Function to use for streaming brain.fm music."
   :type 'function)
 
-(defcustom brain-fm-station-id 35
+(defcustom brain-fm-station-ids
+  '(("Focus"                  . 35)
+    ("Piano Focus"            . 302)
+    ("Cinematic Music Focus"  . 300)
+    ("Beach Focus"            . 53)
+    ("Nightsounds Focus"      . 57)
+    ("Electronic Music Focus" . 55)
+    ("Relaxed Focus"          . 34)
+    ("Guided Meditation"      . 100)
+    ("Unguided Meditation"    . 299)
+    ("Quick Relax"            . 285)
+    ("Nighttime Sleep"        . 42))
+  "List of brain-fm station names to ids."
+  :type 'list)
+
+(defcustom brain-fm-default-station-id 35
   "Default brain-fm station to play."
   :type 'integer
   :safe #'integerp)
@@ -91,6 +106,16 @@ When nil read password from authinfo."
                              (message "Got error %S while logging in" error-thrown))))
     (error "You have to set brain.fm email and password")))
 
+(defvar brain-fm-choose-station-history nil
+  "History for brain-fm-choose-station.")
+
+;;;###autoload
+(defun brain-fm-choose-station (station-name)
+  "Choose STATION-NAME from minibuffer to play."
+  (interactive (list (completing-read "Play brain.fm station: " (mapcar 'car brain-fm-station-ids)
+                                      nil t nil 'brain-fm-choose-station-history)))
+  (brain-fm-play (cdr (assoc-string station-name brain-fm-station-ids))))
+
 ;;;###autoload
 (defun brain-fm-play (&optional station-id)
   "Start playing brain.fm station STATION-ID."
@@ -99,7 +124,7 @@ When nil read password from authinfo."
   (request
    "https://www1.brain.fm/tokens"
    :type "POST"
-   :data (json-encode `(("stationId" . ,(or station-id brain-fm-station-id))))
+   :data (json-encode `(("stationId" . ,(or station-id brain-fm-default-station-id))))
    :headers '(("User-Agent" . "Emacs brain.fm Client")
               ("Accept" . "application/json")
               ("Content-Type" . "application/json;charset=utf-8"))
@@ -108,7 +133,7 @@ When nil read password from authinfo."
              (lambda (&key data &allow-other-keys)
                (let* ((brain-fm-token (cdr (assoc 'token (aref (assoc-default 'songs data) 0))))
                       (brain-fm-url (format "https://stream.brain.fm/?tkn=%s" brain-fm-token)))
-                 (message "Start playing brain.fm station %s" (or station-id brain-fm-station-id))
+                 (message "Start playing brain.fm station %s" (or station-id brain-fm-default-station-id))
                  (funcall brain-fm-play-url-function brain-fm-url))))
    :error (cl-function (lambda (&rest args &key error-thrown &allow-other-keys)
                          (message "Got error %S while getting token" error-thrown)))))
