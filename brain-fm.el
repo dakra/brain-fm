@@ -1,6 +1,6 @@
 ;;; brain-fm.el --- Play music from brain.fm         -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018  Daniel Kraus
+;; Copyright (C) 2018-2021 Daniel Kraus
 
 ;; Author: Daniel Kraus <daniel@kraus.my>
 ;; Version: 0.1
@@ -36,7 +36,7 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 (require 'request)
 
 (defgroup brain-fm nil
