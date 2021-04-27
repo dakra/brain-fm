@@ -7,6 +7,7 @@
 ;; Package-Requires: ((request "0.3.0") (emacs "24.4"))
 ;; Keywords: multimedia
 ;; URL: https://github.com/dakra/brain-fm
+;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
